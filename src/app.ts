@@ -8,7 +8,7 @@ import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import clubRoutes from "./routes/club.routes";
 import eventRoutes from "./routes/event.routes";
-// import analyticsRoutes from './routes/analytics.routes';
+import analyticsRoutes from "./routes/analytics.routes";
 
 const app = express();
 
@@ -29,7 +29,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/clubs", clubRoutes);
 app.use("/api/events", eventRoutes);
-// app.use('/api/analytics', analyticsRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 // Health check
 app.get("/health", (req, res) => {
