@@ -1,0 +1,39 @@
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import cookieParser from "cookie-parser";
+
+// Routes
+// import authRoutes from './routes/auth.routes';
+// import userRoutes from './routes/user.routes';
+// import clubRoutes from './routes/club.routes';
+// import eventRoutes from './routes/event.routes';
+// import analyticsRoutes from './routes/analytics.routes';
+
+const app = express();
+
+app.use(helmet());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+
+// Body parsing middleware
+app.use(express.json());
+app.use(cookieParser());
+
+// Routes
+// app.use('/api/auth', authRoutes);
+// app.use('/api/users', userRoutes);
+// app.use('/api/clubs', clubRoutes);
+// app.use('/api/events', eventRoutes);
+// app.use('/api/analytics', analyticsRoutes);
+
+// Health check
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });
+});
+
+export default app;
