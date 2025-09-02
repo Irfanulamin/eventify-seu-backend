@@ -4,8 +4,8 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 
 // Routes
-// import authRoutes from './routes/auth.routes';
-// import userRoutes from './routes/user.routes';
+import authRoutes from "./routes/auth.routes";
+import userRoutes from "./routes/user.routes";
 // import clubRoutes from './routes/club.routes';
 // import eventRoutes from './routes/event.routes';
 // import analyticsRoutes from './routes/analytics.routes';
@@ -25,8 +25,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Routes
-// app.use('/api/auth', authRoutes);
-// app.use('/api/users', userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 // app.use('/api/clubs', clubRoutes);
 // app.use('/api/events', eventRoutes);
 // app.use('/api/analytics', analyticsRoutes);
