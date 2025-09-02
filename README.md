@@ -18,13 +18,13 @@ It provides APIs for authentication, user management, events, and media uploads.
 ## 📂 Project Structure
 
 src/
-config/ # Config files (DB, Cloudinary)
-models/ # Database models
-controllers/ # Business logic
-routes/ # API endpoints
-middlewares/ # Middleware (auth, validation)
-utils/ # Helpers
-server.ts # Entry point
+├── config/ # Config files (DB, Cloudinary, etc.)
+├── models/ # Database models
+├── controllers/ # Business logic
+├── routes/ # API endpoints
+├── middlewares/ # Middleware (auth, validation)
+├── utils/ # Helper functions
+├── server.ts # Entry point
 
 ---
 
@@ -57,7 +57,7 @@ CLOUDINARY_API_KEY=your-api-key
 CLOUDINARY_API_SECRET=your-api-secret
 ```
 
-### ️⃣ Start the server
+### ️Start the server
 
 ```bash
 npm run dev
@@ -77,9 +77,3 @@ Make sure MongoDB is running / connected via MongoDB Atlas
 Use Postman for API testing
 
 Set correct .env values before running
-
-👨‍💻 Author
-
-Irfanul Amin – GitHub
-
----
