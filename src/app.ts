@@ -12,22 +12,17 @@ import analyticsRoutes from "./routes/analytics.routes";
 
 const app = express();
 
+const allowedOrigins = ["http://localhost:3000", "https://eventifyseu.online"];
 app.set("trust proxy", 1);
-
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://eventifyseu.online",
-  "https://api.eventifyseu.online",
-];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow Postman, curl, mobile apps
+      if (!origin) return callback(null, true); // allow Postman, mobile apps
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        console.log("❌ Blocked CORS for origin:", origin);
+        console.log("Blocked CORS for origin:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
@@ -35,8 +30,6 @@ app.use(
   })
 );
 
-// Handle preflight OPTIONS requests globally
-app.options("*", cors());
 app.use(helmet());
 // Body parsing middleware
 app.use(express.json({ limit: "10mb" }));
