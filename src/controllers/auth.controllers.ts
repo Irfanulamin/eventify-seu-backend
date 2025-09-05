@@ -7,12 +7,10 @@ const authService = new AuthService();
 
 // Cookie configuration for production
 const getCookieConfig = () => {
-  const isProduction = process.env.NODE_ENV === "production";
-
   return {
     httpOnly: true,
-    secure: isProduction, // Only send over HTTPS in production
-    sameSite: isProduction ? ("none" as const) : ("lax" as const), // 'none' for cross-origin, 'lax' for same-origin
+    secure: true, // Only send over HTTPS in production
+    sameSite: "none" as const, // 'none' for cross-origin, 'lax' for same-origin
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     path: "/",
     // Add domain if needed for cross-subdomain cookies
