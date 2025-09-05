@@ -14,6 +14,7 @@ const getCookieConfig = () => {
     secure: isProduction, // Only send over HTTPS in production
     sameSite: isProduction ? ("none" as const) : ("lax" as const), // 'none' for cross-origin, 'lax' for same-origin
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    path: "/",
     // Add domain if needed for cross-subdomain cookies
     // domain: process.env.COOKIE_DOMAIN || undefined,
   };
