@@ -5,6 +5,20 @@ import { verifyToken } from "../utils/jwt";
 
 const authService = new AuthService();
 
+// Cookie configuration for production
+const getCookieConfig = () => {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  return {
+    httpOnly: true,
+    secure: isProduction, // Only send over HTTPS in production
+    sameSite: isProduction ? ("none" as const) : ("lax" as const), // 'none' for cross-origin, 'lax' for same-origin
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    // Add domain if needed for cross-subdomain cookies
+    // domain: process.env.COOKIE_DOMAIN || undefined,
+  };
+};
+
 export const register = async (
   req: Request,
   res: Response
@@ -22,10 +36,7 @@ export const register = async (
       password
     );
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie("token", token, getCookieConfig());
 
     const userData = {
       id: user._id,
@@ -50,10 +61,8 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 
     const { user, token } = await authService.login(email, password);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie("token", token, getCookieConfig());
+
     const userData = {
       id: user._id,
       username: user.username,
@@ -71,7 +80,14 @@ export const logout = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  res.clearCookie("token");
+  // Clear cookie with same options as when it was set (but without domain)
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/", // Must match the path used when setting the cookie
+  });
+
   return sendSuccess(res, "Logout successful");
 };
 
