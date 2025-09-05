@@ -74,22 +74,35 @@ export class ClubService {
       throw new Error("Club not found");
     }
 
-    if (updates.name && updates.name !== club.name) {
+    const allowedUpdates: Partial<IClub> = {};
+
+    if (updates.name !== undefined && updates.name !== club.name) {
       const existingClub = await Club.findOne({ name: updates.name });
       if (existingClub) {
         throw new Error("Club with this name already exists");
       }
+      allowedUpdates.name = updates.name;
+    }
+
+    if (
+      updates.description !== undefined &&
+      updates.description !== club.description
+    ) {
+      allowedUpdates.description = updates.description;
+    }
+    if (updates.fbLink !== undefined && updates.fbLink !== club.fbLink) {
+      allowedUpdates.fbLink = updates.fbLink;
     }
 
     if (imageBuffer) {
       await deleteFromCloudinary(club.imagePublicId);
       const { url: imageUrl, publicId: imagePublicId } =
         await uploadToCloudinary(imageBuffer, "clubs");
-      updates.imageUrl = imageUrl;
-      updates.imagePublicId = imagePublicId;
+      allowedUpdates.imageUrl = imageUrl;
+      allowedUpdates.imagePublicId = imagePublicId;
     }
 
-    const updatedClub = await Club.findByIdAndUpdate(clubId, updates, {
+    const updatedClub = await Club.findByIdAndUpdate(clubId, allowedUpdates, {
       new: true,
       runValidators: true,
     });
