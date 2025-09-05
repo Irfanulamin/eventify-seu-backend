@@ -12,10 +12,7 @@ import analyticsRoutes from "./routes/analytics.routes";
 
 const app = express();
 
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://eventify-seu.vercel.app",
-];
+const allowedOrigins = ["http://localhost:3000", "https://eventifyseu.online"];
 app.set("trust proxy", 1);
 
 app.use(
