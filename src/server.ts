@@ -1,29 +1,22 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import serverless from "serverless-http";
-import connectDB from "./config/db";
 import app from "./app";
+import connectDB from "./config/db";
 
-let isDbConnected = false;
+const PORT = 5000;
 
-const handler = async (req: any, res: any, next: any) => {
+const startServer = async (): Promise<void> => {
   try {
-    if (!isDbConnected) {
-      await connectDB();
-      isDbConnected = true;
-    }
-    next();
+    await connectDB();
+
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on port ${PORT}`);
+    });
   } catch (error) {
-    console.error("DB connection error:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error("Failed to start server:", error);
+    process.exit(1);
   }
 };
 
-const server = serverless(app);
-
-export default async function (req: any, res: any) {
-  await handler(req, res, async () => {
-    await server(req, res);
-  });
-}
+startServer();
