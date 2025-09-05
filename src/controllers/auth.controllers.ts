@@ -24,10 +24,7 @@ export const register = async (
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      domain: ".vercel.app", // try sharing across subdomains
     });
 
     const userData = {
@@ -55,12 +52,8 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      domain: ".vercel.app", // try sharing across subdomains
     });
-
     const userData = {
       id: user._id,
       username: user.username,
