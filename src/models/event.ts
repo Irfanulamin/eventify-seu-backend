@@ -37,8 +37,8 @@ const eventSchema = new Schema<IEvent>(
     description: {
       type: String,
       required: [true, "Description is required"],
-      minlength: [100, "Button label cannot exceed 50 characters"],
-      maxlength: [500, "Button label cannot exceed 50 characters"],
+      minlength: [50, "Description cannot be less than 50 characters"],
+      maxlength: [500, "Description cannot exceed 500 characters"],
     },
     date: {
       type: Date,

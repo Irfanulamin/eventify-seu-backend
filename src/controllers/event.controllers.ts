@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { EventService } from "../services/event.services";
 import { sendSuccess, sendError } from "../utils/http";
+import user from "../models/user";
 
 const eventService = new EventService();
 
@@ -9,9 +10,8 @@ export const createEvent = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const { name, date, club, buttons, description } = req.body;
+    const { name, date, club, buttons, description, createdBy } = req.body;
     const file = req.file;
-    const createdBy = (req as any).user._id;
 
     if (!name || !date || !club || !description) {
       return sendError(res, "Name, date, and club are required", 400);
@@ -20,15 +20,16 @@ export const createEvent = async (
     if (!file) {
       return sendError(res, "Image is required", 400);
     }
+    const parsedButtons = JSON.parse(req.body.buttons);
 
     const event = await eventService.createEvent(
       name,
       new Date(date),
       club,
-      createdBy,
       description,
+      createdBy,
       file.buffer,
-      buttons
+      parsedButtons
     );
 
     return sendSuccess(res, "Event created successfully", event, 201);
@@ -66,6 +67,46 @@ export const getAllEvents = async (
   }
 };
 
+export const getEventsByCreator = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    const { createdBy } = req.params;
+    const userInfo = await user.findById(createdBy);
+    if (!userInfo) return sendError(res, "No user found", 400);
+    const { startDate, endDate, page = 1, limit = 10 } = req.query;
+
+    if (!createdBy) {
+      return sendError(res, "Creator ID is required", 400);
+    }
+
+    const { events, total } = await eventService.getEventsByCreator(
+      createdBy,
+      startDate ? new Date(startDate as string) : undefined,
+      endDate ? new Date(endDate as string) : undefined,
+      parseInt(page as string),
+      parseInt(limit as string)
+    );
+
+    return sendSuccess(res, "Creator events retrieved successfully", {
+      events,
+      creator: createdBy,
+      pagination: {
+        page: parseInt(page as string),
+        limit: parseInt(limit as string),
+        total,
+        pages: Math.ceil(total / parseInt(limit as string)),
+      },
+    });
+  } catch (error: any) {
+    return sendError(
+      res,
+      error.message || "Failed to retrieve creator events",
+      500
+    );
+  }
+};
 export const getEventById = async (
   req: Request,
   res: Response

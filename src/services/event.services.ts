@@ -1,4 +1,4 @@
-import Event, { IEvent } from "../models/event";
+import Event, { IEvent, IEventButton } from "../models/event";
 import Club from "../models/club";
 import { uploadToCloudinary, deleteFromCloudinary } from "./upload.services";
 
@@ -6,14 +6,14 @@ export class EventService {
   async createEvent(
     name: string,
     date: Date,
-    clubId: string,
+    club: string,
     description: string,
     createdBy: string,
     imageBuffer: Buffer,
-    buttons?: Array<{ label: string; url?: string }>
+    buttons?: IEventButton
   ): Promise<IEvent> {
-    const club = await Club.findById(clubId);
-    if (!club) {
+    const clubInfo = await Club.findById(club);
+    if (!clubInfo) {
       throw new Error("Club not found");
     }
 
@@ -28,7 +28,7 @@ export class EventService {
       imagePublicId,
       date,
       buttons: buttons || [],
-      club: clubId,
+      club,
       createdBy,
       description,
     });
@@ -70,6 +70,37 @@ export class EventService {
         .skip(skip)
         .limit(limit)
         .sort({ date: 1 }),
+      Event.countDocuments(query),
+    ]);
+
+    return { events, total };
+  }
+
+  async getEventsByCreator(
+    createdBy: string,
+    startDate?: Date,
+    endDate?: Date,
+    page: number = 1,
+    limit: number = 10
+  ): Promise<{ events: IEvent[]; total: number }> {
+    const query: any = {
+      createdBy: createdBy,
+    };
+
+    if (startDate || endDate) {
+      query.date = {};
+      if (startDate) query.date.$gte = startDate;
+      if (endDate) query.date.$lte = endDate;
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [events, total] = await Promise.all([
+      Event.find(query)
+        .populate("club createdBy", "-password")
+        .skip(skip)
+        .limit(limit)
+        .sort({ date: -1 }), // Latest events first
       Event.countDocuments(query),
     ]);
 
