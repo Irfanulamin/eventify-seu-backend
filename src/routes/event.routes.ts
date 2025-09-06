@@ -15,7 +15,7 @@ router.post("/", upload.single("image"), createEvent);
 router.get("/", getAllEvents);
 router.get("/:id", getEventById);
 router.get("/creator/:createdBy", getEventsByCreator);
-router.patch("/update/:id", upload.single("image"), updateEvent);
+router.patch("/:id", upload.single("image"), updateEvent);
 router.delete("/delete/:id", deleteEvent);
 
 export default router;
