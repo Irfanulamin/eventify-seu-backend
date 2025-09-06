@@ -3,7 +3,6 @@ import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 
-// Routes
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import clubRoutes from "./routes/club.routes";
@@ -18,7 +17,7 @@ app.set("trust proxy", 1);
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow Postman, mobile apps
+      if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -31,7 +30,6 @@ app.use(
 );
 
 app.use(helmet());
-// Body parsing middleware
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());

@@ -2,15 +2,16 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IEventButton {
   label: string;
-  url?: string;
+  url: string;
 }
 
 export interface IEvent extends Document {
   name: string;
   imageUrl: string;
+  description: string;
   imagePublicId: string;
   date: Date;
-  buttons: IEventButton[];
+  buttons?: IEventButton[];
   club: mongoose.Types.ObjectId;
   createdBy: mongoose.Types.ObjectId;
   createdAt: Date;
@@ -33,6 +34,12 @@ const eventSchema = new Schema<IEvent>(
       type: String,
       required: [true, "Image public ID is required"],
     },
+    description: {
+      type: String,
+      required: [true, "Description is required"],
+      minlength: [100, "Button label cannot exceed 50 characters"],
+      maxlength: [500, "Button label cannot exceed 50 characters"],
+    },
     date: {
       type: Date,
       required: [true, "Event date is required"],
@@ -48,7 +55,7 @@ const eventSchema = new Schema<IEvent>(
         label: {
           type: String,
           required: [true, "Button label is required"],
-          maxlength: [50, "Button label cannot exceed 50 characters"],
+          maxlength: [10, "Button label cannot exceed 50 characters"],
         },
         url: {
           type: String,

@@ -7,6 +7,7 @@ export class EventService {
     name: string,
     date: Date,
     clubId: string,
+    description: string,
     createdBy: string,
     imageBuffer: Buffer,
     buttons?: Array<{ label: string; url?: string }>
@@ -29,6 +30,7 @@ export class EventService {
       buttons: buttons || [],
       club: clubId,
       createdBy,
+      description,
     });
 
     const createdEvent = await Event.findById(event._id).populate(

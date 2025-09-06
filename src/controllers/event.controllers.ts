@@ -9,11 +9,11 @@ export const createEvent = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const { name, date, club, buttons } = req.body;
+    const { name, date, club, buttons, description } = req.body;
     const file = req.file;
     const createdBy = (req as any).user._id;
 
-    if (!name || !date || !club) {
+    if (!name || !date || !club || !description) {
       return sendError(res, "Name, date, and club are required", 400);
     }
 
@@ -26,6 +26,7 @@ export const createEvent = async (
       new Date(date),
       club,
       createdBy,
+      description,
       file.buffer,
       buttons
     );
