@@ -126,11 +126,19 @@ export const updateEvent = async (
 ): Promise<Response> => {
   try {
     const { id } = req.params;
-    const updates = req.body;
+    const updates = { ...req.body };
     const file = req.file;
 
     if (updates.date) {
       updates.date = new Date(updates.date);
+    }
+
+    if (updates.buttons) {
+      try {
+        updates.buttons = JSON.parse(updates.buttons);
+      } catch {
+        updates.buttons = [];
+      }
     }
 
     const event = await eventService.updateEvent(id, updates, file?.buffer);
